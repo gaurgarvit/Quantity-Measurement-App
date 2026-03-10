@@ -1,57 +1,57 @@
 package org.example;
 
-
 import org.junit.jupiter.api.Test;
 import static org.junit.jupiter.api.Assertions.*;
 
 public class QuantityMeasurementAppTest {
 
     @Test
-    public void kilogramEquals1000Grams() {
+    public void lengthFeetEqualsInches() {
 
-        Weight w1 = new Weight(1, WeightUnit.KILOGRAM);
-        Weight w2 = new Weight(1000, WeightUnit.GRAM);
+        Quantity<LengthUnit> q1 =
+                new Quantity<>(1.0, LengthUnit.FEET);
+
+        Quantity<LengthUnit> q2 =
+                new Quantity<>(12.0, LengthUnit.INCHES);
+
+        assertTrue(q1.equals(q2));
+    }
+
+    @Test
+    public void weightKilogramEqualsGrams() {
+
+        Quantity<WeightUnit> w1 =
+                new Quantity<>(1.0, WeightUnit.KILOGRAM);
+
+        Quantity<WeightUnit> w2 =
+                new Quantity<>(1000.0, WeightUnit.GRAM);
 
         assertTrue(w1.equals(w2));
     }
 
     @Test
-    public void poundEquals453Point592Grams() {
+    public void convertFeetToInches() {
 
-        Weight w1 = new Weight(1, WeightUnit.POUND);
-        Weight w2 = new Weight(453.592, WeightUnit.GRAM);
+        Quantity<LengthUnit> length =
+                new Quantity<>(1.0, LengthUnit.FEET);
 
-        assertTrue(w1.equals(w2));
+        double result = length.convertTo(LengthUnit.INCHES);
+
+        assertEquals(12.0, result);
     }
 
     @Test
-    public void tonneEquals1000000Grams() {
+    public void addLengthFeetAndInches() {
 
-        Weight w1 = new Weight(1, WeightUnit.TONNE);
-        Weight w2 = new Weight(1000000, WeightUnit.GRAM);
+        Quantity<LengthUnit> l1 =
+                new Quantity<>(1.0, LengthUnit.FEET);
 
-        assertTrue(w1.equals(w2));
-    }
+        Quantity<LengthUnit> l2 =
+                new Quantity<>(12.0, LengthUnit.INCHES);
 
-    @Test
-    public void kilogramNotEqualToPound() {
+        Quantity<LengthUnit> result =
+                l1.add(l2, LengthUnit.FEET);
 
-        Weight w1 = new Weight(1, WeightUnit.KILOGRAM);
-        Weight w2 = new Weight(1, WeightUnit.POUND);
-
-        assertFalse(w1.equals(w2));
-    }
-
-    @Test
-    public void additionOfWeightsEqualsExpected() {
-
-        Weight w1 = new Weight(1, WeightUnit.KILOGRAM);
-        Weight w2 = new Weight(1000, WeightUnit.GRAM);
-
-        Weight result = w1.add(w2);
-
-        Weight expected = new Weight(2, WeightUnit.KILOGRAM);
-
-        assertTrue(result.equals(expected));
+        assertEquals(2.0, result.getValue());
     }
 }

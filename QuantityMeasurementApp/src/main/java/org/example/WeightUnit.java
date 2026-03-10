@@ -1,6 +1,6 @@
 package org.example;
 
-public enum WeightUnit {
+public enum WeightUnit implements IMeasurable {
 
     MILLIGRAM(0.001),
     GRAM(1.0),
@@ -18,11 +18,15 @@ public enum WeightUnit {
         return conversionFactor;
     }
 
+    @Override
     public double convertToBaseUnit(double value) {
-        return Math.round((value * conversionFactor) * 100.0) / 100.0;
+        double result = value * conversionFactor;
+        return Math.round(result * 100.0) / 100.0;
     }
 
+    @Override
     public double convertFromBaseUnit(double baseValue) {
-        return Math.round((baseValue / conversionFactor) * 100.0) / 100.0;
+        double result = baseValue / conversionFactor;
+        return Math.round(result * 100.0) / 100.0;
     }
 }
