@@ -1,5 +1,6 @@
 package org.example;
 
+
 public class Length {
 
     private double value;

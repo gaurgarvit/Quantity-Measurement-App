@@ -1,6 +1,5 @@
 package org.example;
 
-
 public class QuantityMeasurementApp {
 
     public static boolean demonstrateLengthEquality(Length length1, Length length2) {
