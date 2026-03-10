@@ -1,70 +1,56 @@
 package org.example;
 
+
 import org.junit.jupiter.api.Test;
 import static org.junit.jupiter.api.Assertions.*;
 
 public class QuantityMeasurementAppTest {
 
     @Test
-    public void testFeetEquality() {
+    public void kilogramEquals1000Grams() {
 
-        Length l1 = new Length(1.0, LengthUnit.FEET);
-        Length l2 = new Length(1.0, LengthUnit.FEET);
+        Weight w1 = new Weight(1, WeightUnit.KILOGRAM);
+        Weight w2 = new Weight(1000, WeightUnit.GRAM);
 
-        assertTrue(l1.equals(l2));
+        assertTrue(w1.equals(w2));
     }
 
     @Test
-    public void testFeetInchesComparison() {
+    public void poundEquals453Point592Grams() {
 
-        Length l1 = new Length(1.0, LengthUnit.FEET);
-        Length l2 = new Length(12.0, LengthUnit.INCHES);
+        Weight w1 = new Weight(1, WeightUnit.POUND);
+        Weight w2 = new Weight(453.592, WeightUnit.GRAM);
 
-        assertTrue(l1.equals(l2));
+        assertTrue(w1.equals(w2));
     }
 
     @Test
-    public void convertFeetToInches() {
+    public void tonneEquals1000000Grams() {
 
-        Length result = QuantityMeasurementApp.demonstrateLengthConversion(
-                3.0,
-                LengthUnit.FEET,
-                LengthUnit.INCHES
-        );
+        Weight w1 = new Weight(1, WeightUnit.TONNE);
+        Weight w2 = new Weight(1000000, WeightUnit.GRAM);
 
-        Length expected = new Length(36.0, LengthUnit.INCHES);
-
-        assertTrue(result.equals(expected));
+        assertTrue(w1.equals(w2));
     }
 
     @Test
-    public void addFeetAndInches() {
+    public void kilogramNotEqualToPound() {
 
-        Length length1 = new Length(1.0, LengthUnit.FEET);
-        Length length2 = new Length(12.0, LengthUnit.INCHES);
+        Weight w1 = new Weight(1, WeightUnit.KILOGRAM);
+        Weight w2 = new Weight(1, WeightUnit.POUND);
 
-        Length result =
-                QuantityMeasurementApp.demonstrateLengthAddition(length1, length2);
-
-        Length expected = new Length(2.0, LengthUnit.FEET);
-
-        assertTrue(result.equals(expected));
+        assertFalse(w1.equals(w2));
     }
 
     @Test
-    public void addFeetAndInchesWithTargetUnitInches() {
+    public void additionOfWeightsEqualsExpected() {
 
-        Length length1 = new Length(1.0, LengthUnit.FEET);
-        Length length2 = new Length(12.0, LengthUnit.INCHES);
+        Weight w1 = new Weight(1, WeightUnit.KILOGRAM);
+        Weight w2 = new Weight(1000, WeightUnit.GRAM);
 
-        Length result =
-                QuantityMeasurementApp.demonstrateLengthAddition(
-                        length1,
-                        length2,
-                        LengthUnit.INCHES
-                );
+        Weight result = w1.add(w2);
 
-        Length expected = new Length(24.0, LengthUnit.INCHES);
+        Weight expected = new Weight(2, WeightUnit.KILOGRAM);
 
         assertTrue(result.equals(expected));
     }
