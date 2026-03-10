@@ -5,9 +5,16 @@ public class Length {
     private double value;
     private LengthUnit unit;
 
+    // tolerance for floating point comparison
+    private static final double EPSILON = 0.0001;
+
+    // Enum with conversion factors (base unit = inches)
     public enum LengthUnit {
+
         FEET(12.0),
-        INCHES(1.0);
+        INCHES(1.0),
+        YARDS(36.0),
+        CENTIMETERS(0.393701);
 
         private final double conversionFactor;
 
@@ -40,7 +47,7 @@ public class Length {
         double thisValue = this.convertToBaseUnit();
         double thatValue = thatLength.convertToBaseUnit();
 
-        return Double.compare(thisValue, thatValue) == 0;
+        return Math.abs(thisValue - thatValue) < EPSILON;
     }
 
     @Override
@@ -55,5 +62,24 @@ public class Length {
         Length that = (Length) o;
 
         return compare(that);
+    }
+
+    // Optional main method for quick testing
+    public static void main(String[] args) {
+
+        Length length1 = new Length(1.0, LengthUnit.FEET);
+        Length length2 = new Length(12.0, LengthUnit.INCHES);
+
+        System.out.println("Are lengths equal? " + length1.equals(length2));
+
+        Length length3 = new Length(1.0, LengthUnit.YARDS);
+        Length length4 = new Length(36.0, LengthUnit.INCHES);
+
+        System.out.println("Are lengths equal? " + length3.equals(length4));
+
+        Length length5 = new Length(30.48, LengthUnit.CENTIMETERS);
+        Length length6 = new Length(1.0, LengthUnit.FEET);
+
+        System.out.println("Are lengths equal? " + length5.equals(length6));
     }
 }
