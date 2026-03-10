@@ -2,7 +2,6 @@ package org.example;
 
 public class QuantityMeasurementApp {
 
-    // Demonstrate equality
     public static boolean demonstrateLengthEquality(Length length1, Length length2) {
 
         if (length1.equals(length2)) {
@@ -14,7 +13,6 @@ public class QuantityMeasurementApp {
         return false;
     }
 
-    // Demonstrate comparison using values
     public static boolean demonstrateLengthComparison(
             double value1,
             Length.LengthUnit unit1,
@@ -27,7 +25,6 @@ public class QuantityMeasurementApp {
         return demonstrateLengthEquality(length1, length2);
     }
 
-    // Conversion using raw values
     public static Length demonstrateLengthConversion(
             double value,
             Length.LengthUnit fromUnit,
@@ -38,7 +35,6 @@ public class QuantityMeasurementApp {
         return length.convertTo(toUnit);
     }
 
-    // Overloaded conversion method
     public static Length demonstrateLengthConversion(
             Length length,
             Length.LengthUnit toUnit) {
@@ -46,49 +42,22 @@ public class QuantityMeasurementApp {
         return length.convertTo(toUnit);
     }
 
-    // UC5 Required Static Convert API
-    public static double convert(
-            double value,
-            Length.LengthUnit source,
-            Length.LengthUnit target) {
+    public static Length demonstrateLengthAddition(Length length1, Length length2) {
 
-        if (!Double.isFinite(value)) {
-            throw new IllegalArgumentException("Value must be finite");
+        if (length1 == null || length2 == null) {
+            throw new IllegalArgumentException("Lengths cannot be null");
         }
 
-        if (source == null || target == null) {
-            throw new IllegalArgumentException("Units cannot be null");
-        }
-
-        Length sourceLength = new Length(value, source);
-
-        Length converted = sourceLength.convertTo(target);
-
-        return converted.getValue();
+        return length1.add(length2);
     }
 
-    // Main method
     public static void main(String[] args) {
 
-        Length length1 = new Length(3, Length.LengthUnit.FEET);
-        Length length2 = new Length(36, Length.LengthUnit.INCHES);
+        Length l1 = new Length(1.0, Length.LengthUnit.FEET);
+        Length l2 = new Length(12.0, Length.LengthUnit.INCHES);
 
-        demonstrateLengthEquality(length1, length2);
+        Length result = demonstrateLengthAddition(l1, l2);
 
-        Length converted = demonstrateLengthConversion(
-                2,
-                Length.LengthUnit.YARDS,
-                Length.LengthUnit.INCHES
-        );
-
-        System.out.println("Converted Length: " + converted);
-
-        double result = convert(
-                1,
-                Length.LengthUnit.FEET,
-                Length.LengthUnit.INCHES
-        );
-
-        System.out.println("1 FEET in INCHES = " + result);
+        System.out.println("Result: " + result);
     }
 }

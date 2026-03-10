@@ -5,8 +5,8 @@ public class Length {
     private double value;
     private LengthUnit unit;
 
-    // Enum for units
     public enum LengthUnit {
+
         FEET(12.0),
         INCHES(1.0),
         YARDS(36.0),
@@ -23,8 +23,8 @@ public class Length {
         }
     }
 
-    // Constructor
     public Length(double value, LengthUnit unit) {
+
         if (!Double.isFinite(value)) {
             throw new IllegalArgumentException("Invalid value");
         }
@@ -37,7 +37,6 @@ public class Length {
         this.unit = unit;
     }
 
-    // Getter
     public double getValue() {
         return value;
     }
@@ -46,17 +45,21 @@ public class Length {
         return unit;
     }
 
-    // Convert to base unit (inches)
     private double convertToBaseUnit() {
+
         double baseValue = value * unit.getConversionFactor();
+
         return Math.round(baseValue * 100.0) / 100.0;
     }
 
-    // Compare two lengths
+    private double convertFromBaseToTargetUnit(double lengthInInches, LengthUnit targetUnit) {
+
+        double converted = lengthInInches / targetUnit.getConversionFactor();
+
+        return Math.round(converted * 100.0) / 100.0;
+    }
+
     private boolean compare(Length thatLength) {
-        if (thatLength == null) {
-            return false;
-        }
 
         double thisBase = this.convertToBaseUnit();
         double thatBase = thatLength.convertToBaseUnit();
@@ -64,24 +67,18 @@ public class Length {
         return Double.compare(thisBase, thatBase) == 0;
     }
 
-    // Override equals
     @Override
     public boolean equals(Object o) {
 
-        if (this == o) {
-            return true;
-        }
+        if (this == o) return true;
 
-        if (!(o instanceof Length)) {
-            return false;
-        }
+        if (!(o instanceof Length)) return false;
 
         Length other = (Length) o;
 
         return compare(other);
     }
 
-    // Convert to another unit
     public Length convertTo(LengthUnit targetUnit) {
 
         if (targetUnit == null) {
@@ -90,14 +87,27 @@ public class Length {
 
         double baseValue = convertToBaseUnit();
 
-        double convertedValue = baseValue / targetUnit.getConversionFactor();
-
-        convertedValue = Math.round(convertedValue * 100.0) / 100.0;
+        double convertedValue = convertFromBaseToTargetUnit(baseValue, targetUnit);
 
         return new Length(convertedValue, targetUnit);
     }
 
-    // toString
+    public Length add(Length thatLength) {
+
+        if (thatLength == null) {
+            throw new IllegalArgumentException("Length cannot be null");
+        }
+
+        double thisBase = this.convertToBaseUnit();
+        double thatBase = thatLength.convertToBaseUnit();
+
+        double sumBase = thisBase + thatBase;
+
+        double result = convertFromBaseToTargetUnit(sumBase, this.unit);
+
+        return new Length(result, this.unit);
+    }
+
     @Override
     public String toString() {
         return String.format("%.2f %s", value, unit);
