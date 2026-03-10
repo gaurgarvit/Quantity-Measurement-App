@@ -1,28 +1,9 @@
 package org.example;
 
-
 public class Length {
 
     private double value;
     private LengthUnit unit;
-
-    public enum LengthUnit {
-
-        FEET(12.0),
-        INCHES(1.0),
-        YARDS(36.0),
-        CENTIMETERS(0.393701);
-
-        private final double conversionFactor;
-
-        LengthUnit(double conversionFactor) {
-            this.conversionFactor = conversionFactor;
-        }
-
-        public double getConversionFactor() {
-            return conversionFactor;
-        }
-    }
 
     public Length(double value, LengthUnit unit) {
 
@@ -48,9 +29,7 @@ public class Length {
 
     private double convertToBaseUnit() {
 
-        double baseValue = value * unit.getConversionFactor();
-
-        return Math.round(baseValue * 100.0) / 100.0;
+        return unit.convertToBaseUnit(value);
     }
 
     private boolean compare(Length thatLength) {
@@ -81,7 +60,7 @@ public class Length {
 
         double baseValue = convertToBaseUnit();
 
-        double convertedValue = convertFromBaseToTargetUnit(baseValue, targetUnit);
+        double convertedValue = targetUnit.convertFromBaseUnit(baseValue);
 
         return new Length(convertedValue, targetUnit);
     }
@@ -106,21 +85,14 @@ public class Length {
             throw new IllegalArgumentException("Length cannot be null");
         }
 
-        double thisBase = this.convertToBaseUnit();
-        double thatBase = length.convertToBaseUnit();
+        double base1 = this.convertToBaseUnit();
+        double base2 = length.convertToBaseUnit();
 
-        double sumBase = thisBase + thatBase;
+        double sum = base1 + base2;
 
-        double result = convertFromBaseToTargetUnit(sumBase, targetUnit);
+        double result = targetUnit.convertFromBaseUnit(sum);
 
         return new Length(result, targetUnit);
-    }
-
-    private double convertFromBaseToTargetUnit(double lengthInInches, LengthUnit targetUnit) {
-
-        double converted = lengthInInches / targetUnit.getConversionFactor();
-
-        return Math.round(converted * 100.0) / 100.0;
     }
 
     @Override
