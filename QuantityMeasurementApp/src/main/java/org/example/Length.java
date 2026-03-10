@@ -52,13 +52,6 @@ public class Length {
         return Math.round(baseValue * 100.0) / 100.0;
     }
 
-    private double convertFromBaseToTargetUnit(double lengthInInches, LengthUnit targetUnit) {
-
-        double converted = lengthInInches / targetUnit.getConversionFactor();
-
-        return Math.round(converted * 100.0) / 100.0;
-    }
-
     private boolean compare(Length thatLength) {
 
         double thisBase = this.convertToBaseUnit();
@@ -94,18 +87,39 @@ public class Length {
 
     public Length add(Length thatLength) {
 
-        if (thatLength == null) {
+        return addAndConvert(thatLength, this.unit);
+    }
+
+    public Length add(Length length, LengthUnit targetUnit) {
+
+        if (targetUnit == null) {
+            throw new IllegalArgumentException("Target unit cannot be null");
+        }
+
+        return addAndConvert(length, targetUnit);
+    }
+
+    private Length addAndConvert(Length length, LengthUnit targetUnit) {
+
+        if (length == null) {
             throw new IllegalArgumentException("Length cannot be null");
         }
 
         double thisBase = this.convertToBaseUnit();
-        double thatBase = thatLength.convertToBaseUnit();
+        double thatBase = length.convertToBaseUnit();
 
         double sumBase = thisBase + thatBase;
 
-        double result = convertFromBaseToTargetUnit(sumBase, this.unit);
+        double result = convertFromBaseToTargetUnit(sumBase, targetUnit);
 
-        return new Length(result, this.unit);
+        return new Length(result, targetUnit);
+    }
+
+    private double convertFromBaseToTargetUnit(double lengthInInches, LengthUnit targetUnit) {
+
+        double converted = lengthInInches / targetUnit.getConversionFactor();
+
+        return Math.round(converted * 100.0) / 100.0;
     }
 
     @Override
