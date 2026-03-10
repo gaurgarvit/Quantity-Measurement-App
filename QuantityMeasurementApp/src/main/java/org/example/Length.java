@@ -29,7 +29,7 @@ public class Length {
 
     private double convertToBaseUnit() {
 
-        return unit.convertToBaseUnit(value);
+        
     }
 
     private boolean compare(Length thatLength) {
