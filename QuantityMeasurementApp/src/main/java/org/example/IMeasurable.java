@@ -8,4 +8,7 @@ public interface IMeasurable {
 
     double convertFromBaseUnit(double baseValue);
 
+    default String getUnitName() {
+        return this.toString();
+    }
 }

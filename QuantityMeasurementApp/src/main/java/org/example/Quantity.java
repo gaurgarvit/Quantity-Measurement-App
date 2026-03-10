@@ -1,5 +1,7 @@
 package org.example;
 
+import java.util.Objects;
+
 public class Quantity<U extends IMeasurable> {
 
     private final double value;
@@ -76,7 +78,13 @@ public class Quantity<U extends IMeasurable> {
     }
 
     @Override
+    public int hashCode() {
+        double baseValue = unit.convertToBaseUnit(value);
+        return Objects.hash(baseValue, unit.getClass());
+    }
+
+    @Override
     public String toString() {
-        return value + " " + unit;
+        return value + " " + unit.getUnitName();
     }
 }

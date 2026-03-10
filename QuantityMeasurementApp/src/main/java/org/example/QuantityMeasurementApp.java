@@ -30,18 +30,31 @@ public class QuantityMeasurementApp {
 
     public static void main(String[] args) {
 
-        Quantity<LengthUnit> length1 =
+        Quantity<LengthUnit> length =
                 new Quantity<>(1.0, LengthUnit.FEET);
 
-        Quantity<LengthUnit> length2 =
+        Quantity<LengthUnit> inches =
                 new Quantity<>(12.0, LengthUnit.INCHES);
 
-        System.out.println("Equal: " +
-                demonstrateEquality(length1, length2));
+        System.out.println("Length Equal: "
+                + demonstrateEquality(length, inches));
 
-        Quantity<LengthUnit> result =
-                demonstrateAddition(length1, length2, LengthUnit.FEET);
+        Quantity<WeightUnit> weight =
+                new Quantity<>(1.0, WeightUnit.KILOGRAM);
 
-        System.out.println(result);
+        Quantity<WeightUnit> grams =
+                new Quantity<>(1000.0, WeightUnit.GRAM);
+
+        System.out.println("Weight Equal: "
+                + demonstrateEquality(weight, grams));
+
+        Quantity<VolumeUnit> litre =
+                new Quantity<>(1.0, VolumeUnit.LITRE);
+
+        Quantity<VolumeUnit> ml =
+                new Quantity<>(1000.0, VolumeUnit.MILLILITRE);
+
+        System.out.println("Volume Equal: "
+                + demonstrateEquality(litre, ml));
     }
 }

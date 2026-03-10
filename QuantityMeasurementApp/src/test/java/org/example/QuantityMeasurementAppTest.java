@@ -30,28 +30,40 @@ public class QuantityMeasurementAppTest {
     }
 
     @Test
-    public void convertFeetToInches() {
+    public void volumeLiterEqualsMilliliters() {
 
-        Quantity<LengthUnit> length =
-                new Quantity<>(1.0, LengthUnit.FEET);
+        Quantity<VolumeUnit> v1 =
+                new Quantity<>(1.0, VolumeUnit.LITRE);
 
-        double result = length.convertTo(LengthUnit.INCHES);
+        Quantity<VolumeUnit> v2 =
+                new Quantity<>(1000.0, VolumeUnit.MILLILITRE);
 
-        assertEquals(12.0, result);
+        assertTrue(v1.equals(v2));
     }
 
     @Test
-    public void addLengthFeetAndInches() {
+    public void convertVolumeLitersToMilliliters() {
 
-        Quantity<LengthUnit> l1 =
-                new Quantity<>(1.0, LengthUnit.FEET);
+        Quantity<VolumeUnit> v =
+                new Quantity<>(1.0, VolumeUnit.LITRE);
 
-        Quantity<LengthUnit> l2 =
-                new Quantity<>(12.0, LengthUnit.INCHES);
+        double result = v.convertTo(VolumeUnit.MILLILITRE);
 
-        Quantity<LengthUnit> result =
-                l1.add(l2, LengthUnit.FEET);
+        assertEquals(1000.0, result);
+    }
 
-        assertEquals(2.0, result.getValue());
+    @Test
+    public void addVolumeLitersAndMilliliters() {
+
+        Quantity<VolumeUnit> v1 =
+                new Quantity<>(1.0, VolumeUnit.LITRE);
+
+        Quantity<VolumeUnit> v2 =
+                new Quantity<>(1000.0, VolumeUnit.MILLILITRE);
+
+        Quantity<VolumeUnit> sum =
+                v1.add(v2);
+
+        assertEquals(2.0, sum.getValue());
     }
 }
