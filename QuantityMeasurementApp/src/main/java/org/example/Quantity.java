@@ -1,11 +1,9 @@
 package org.example;
 
-import java.util.Objects;
-
 public class Quantity<U extends IMeasurable> {
 
-    private final double value;
-    private final U unit;
+    private double value;
+    private U unit;
 
     public Quantity(double value, U unit) {
 
@@ -29,8 +27,9 @@ public class Quantity<U extends IMeasurable> {
 
     public double convertTo(U targetUnit) {
 
-        double baseValue = unit.convertToBaseUnit(value);
-        return targetUnit.convertFromBaseUnit(baseValue);
+        double base = unit.convertToBaseUnit(value);
+
+        return targetUnit.convertFromBaseUnit(base);
     }
 
     public Quantity<U> add(Quantity<U> other) {
@@ -38,9 +37,9 @@ public class Quantity<U extends IMeasurable> {
         double base1 = unit.convertToBaseUnit(value);
         double base2 = other.unit.convertToBaseUnit(other.value);
 
-        double sum = base1 + base2;
+        double resultBase = base1 + base2;
 
-        double result = unit.convertFromBaseUnit(sum);
+        double result = unit.convertFromBaseUnit(resultBase);
 
         return new Quantity<>(result, unit);
     }
@@ -50,11 +49,46 @@ public class Quantity<U extends IMeasurable> {
         double base1 = unit.convertToBaseUnit(value);
         double base2 = other.unit.convertToBaseUnit(other.value);
 
-        double sum = base1 + base2;
+        double resultBase = base1 + base2;
 
-        double result = targetUnit.convertFromBaseUnit(sum);
+        double result = targetUnit.convertFromBaseUnit(resultBase);
 
         return new Quantity<>(result, targetUnit);
+    }
+
+    public Quantity<U> subtract(Quantity<U> other) {
+
+        double base1 = unit.convertToBaseUnit(value);
+        double base2 = other.unit.convertToBaseUnit(other.value);
+
+        double resultBase = base1 - base2;
+
+        double result = unit.convertFromBaseUnit(resultBase);
+
+        return new Quantity<>(result, unit);
+    }
+
+    public Quantity<U> subtract(Quantity<U> other, U targetUnit) {
+
+        double base1 = unit.convertToBaseUnit(value);
+        double base2 = other.unit.convertToBaseUnit(other.value);
+
+        double resultBase = base1 - base2;
+
+        double result = targetUnit.convertFromBaseUnit(resultBase);
+
+        return new Quantity<>(result, targetUnit);
+    }
+
+    public double divide(Quantity<U> other) {
+
+        if (other.value == 0)
+            throw new ArithmeticException("Division by zero");
+
+        double base1 = unit.convertToBaseUnit(value);
+        double base2 = other.unit.convertToBaseUnit(other.value);
+
+        return base1 / base2;
     }
 
     @Override
@@ -63,7 +97,7 @@ public class Quantity<U extends IMeasurable> {
         if (this == obj)
             return true;
 
-        if (!(obj instanceof Quantity<?>))
+        if (!(obj instanceof Quantity))
             return false;
 
         Quantity<?> other = (Quantity<?>) obj;
@@ -75,12 +109,6 @@ public class Quantity<U extends IMeasurable> {
         double base2 = other.unit.convertToBaseUnit(other.value);
 
         return Double.compare(base1, base2) == 0;
-    }
-
-    @Override
-    public int hashCode() {
-        double baseValue = unit.convertToBaseUnit(value);
-        return Objects.hash(baseValue, unit.getClass());
     }
 
     @Override
