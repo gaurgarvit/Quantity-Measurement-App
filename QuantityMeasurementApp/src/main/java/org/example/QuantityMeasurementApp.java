@@ -2,46 +2,32 @@ package org.example;
 
 public class QuantityMeasurementApp {
 
-    public static <U extends IMeasurable> boolean demonstrateEquality(
-            Quantity<U> q1, Quantity<U> q2) {
+    public static void main(String[] args) {
 
-        return q1.equals(q2);
+        Quantity<LengthUnit> l1 =
+                new Quantity<>(1, LengthUnit.FEET);
+
+        Quantity<LengthUnit> l2 =
+                new Quantity<>(12, LengthUnit.INCHES);
+
+        System.out.println(l1.add(l2));
+
+        Quantity<WeightUnit> w1 =
+                new Quantity<>(10, WeightUnit.KILOGRAM);
+
+        Quantity<WeightUnit> w2 =
+                new Quantity<>(5000, WeightUnit.GRAM);
+
+        System.out.println(w1.add(w2, WeightUnit.GRAM));
+
+        Quantity<VolumeUnit> v1 =
+                new Quantity<>(5, VolumeUnit.LITRE);
+
+        Quantity<VolumeUnit> v2 =
+                new Quantity<>(2, VolumeUnit.LITRE);
+
+        System.out.println(v1.subtract(v2));
+
+        System.out.println(l1.divide(new Quantity<>(2, LengthUnit.FEET)));
     }
-
-    public static <U extends IMeasurable> Quantity<U> demonstrateConversion(
-            Quantity<U> quantity, U targetUnit) {
-
-        return new Quantity<>(quantity.convertTo(targetUnit), targetUnit);
-    }
-
-    public static <U extends IMeasurable> Quantity<U> demonstrateAddition(
-            Quantity<U> q1, Quantity<U> q2) {
-
-        return q1.add(q2);
-    }
-
-    public static <U extends IMeasurable> Quantity<U> demonstrateAddition(
-            Quantity<U> q1, Quantity<U> q2, U targetUnit) {
-
-        return q1.add(q2, targetUnit);
-    }
-
-    public static <U extends IMeasurable> Quantity<U> demonstrateSubtraction(
-            Quantity<U> q1, Quantity<U> q2) {
-
-        return q1.subtract(q2);
-    }
-
-    public static <U extends IMeasurable> Quantity<U> demonstrateSubtraction(
-            Quantity<U> q1, Quantity<U> q2, U targetUnit) {
-
-        return q1.subtract(q2, targetUnit);
-    }
-
-    public static <U extends IMeasurable> double demonstrateDivision(
-            Quantity<U> q1, Quantity<U> q2) {
-
-        return q1.divide(q2);
-    }
-
 }
