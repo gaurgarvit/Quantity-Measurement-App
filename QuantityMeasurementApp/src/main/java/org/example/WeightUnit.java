@@ -2,24 +2,24 @@ package org.example;
 
 public enum WeightUnit implements IMeasurable {
 
-    GRAM(1.0),
-    KILOGRAM(1000.0),
-    TONNE(1000000.0),
-    POUND(453.592);
+    KILOGRAM(1.0),
+    GRAM(0.001),
+    TONNE(1000.0),
+    POUND(0.453592);
 
-    private final double toBaseFactor;
+    private final double conversionFactor;
 
-    WeightUnit(double toBaseFactor) {
-        this.toBaseFactor = toBaseFactor;
+    WeightUnit(double conversionFactor) {
+        this.conversionFactor = conversionFactor;
     }
 
     @Override
-    public double toBaseUnit(double value) {
-        return value * toBaseFactor;
+    public double getConversionFactor() {
+        return conversionFactor;
     }
 
     @Override
-    public double fromBaseUnit(double baseValue) {
-        return baseValue / toBaseFactor;
+    public String getUnitName() {
+        return name();
     }
 }

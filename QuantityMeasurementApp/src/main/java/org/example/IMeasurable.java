@@ -2,7 +2,15 @@ package org.example;
 
 public interface IMeasurable {
 
-    double toBaseUnit(double value);
+    double getConversionFactor();
 
-    double fromBaseUnit(double baseValue);
+    default double convertToBaseUnit(double value) {
+        return value * getConversionFactor();
+    }
+
+    default double convertFromBaseUnit(double baseValue) {
+        return baseValue / getConversionFactor();
+    }
+
+    String getUnitName();
 }
