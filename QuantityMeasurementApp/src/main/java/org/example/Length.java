@@ -5,6 +5,8 @@ public class Length {
     private double value;
     private LengthUnit unit;
 
+    private static final double EPSILON = 0.0001;
+
     public Length(double value, LengthUnit unit) {
 
         if (!Double.isFinite(value)) {
@@ -29,7 +31,8 @@ public class Length {
 
     private double convertToBaseUnit() {
 
-        
+        // Convert current value to base unit using enum logic
+        return unit.convertToBaseUnit(value);
     }
 
     private boolean compare(Length thatLength) {
@@ -37,7 +40,7 @@ public class Length {
         double thisBase = this.convertToBaseUnit();
         double thatBase = thatLength.convertToBaseUnit();
 
-        return Double.compare(thisBase, thatBase) == 0;
+        return Math.abs(thisBase - thatBase) < EPSILON;
     }
 
     @Override

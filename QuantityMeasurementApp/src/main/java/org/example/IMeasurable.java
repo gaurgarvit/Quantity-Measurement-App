@@ -1,8 +1,27 @@
 package org.example;
 
+@FunctionalInterface
+interface SupportsArithmetic {
+    boolean isSupported();
+}
+
 public interface IMeasurable {
 
-    double toBaseUnit(double value);
+    SupportsArithmetic supportsArithmetic = () -> true;
 
-    double fromBaseUnit(double baseValue);
+    String getUnitName();
+
+    double getConversionFactor();
+
+    double convertToBaseUnit(double value);
+
+    double convertFromBaseUnit(double baseValue);
+
+    default boolean supportsArithmetic() {
+        return supportsArithmetic.isSupported();
+    }
+
+    default void validateOperationSupport(String operation) {
+        // default allows all operations
+    }
 }

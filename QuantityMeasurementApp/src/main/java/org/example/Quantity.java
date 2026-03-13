@@ -1,13 +1,15 @@
 package org.example;
 
-import java.util.function.DoubleBinaryOperator;
-
 public class Quantity<U extends IMeasurable> {
 
-    private final double value;
-    private final U unit;
+    private double value;
+    private U unit;
 
     public Quantity(double value, U unit) {
+
+        if (unit == null)
+            throw new IllegalArgumentException("Unit cannot be null");
+
         this.value = value;
         this.unit = unit;
     }
@@ -20,57 +22,46 @@ public class Quantity<U extends IMeasurable> {
         return unit;
     }
 
-    /*
-     ============================
-     EQUALS METHOD (Java 8 FIXED)
-     ============================
-     */
-
     @Override
     public boolean equals(Object obj) {
 
         if (this == obj)
             return true;
 
-        if (obj == null)
-            return false;
-
         if (!(obj instanceof Quantity))
             return false;
 
         Quantity<?> other = (Quantity<?>) obj;
 
-        if (!unit.getClass().equals(other.unit.getClass()))
+        if (unit.getClass() != other.unit.getClass())
             return false;
 
-        double thisBase = unit.toBaseUnit(value);
-        double otherBase = ((IMeasurable) other.unit).toBaseUnit(other.value);
+        double base1 = unit.convertToBaseUnit(value);
+        double base2 = ((IMeasurable) other.unit).convertToBaseUnit(other.value);
 
-        return Math.abs(thisBase - otherBase) < 0.0001;
+        return Math.abs(base1 - base2) < 0.0001;
     }
 
-    @Override
-    public String toString() {
-        return "Quantity(" + value + ", " + unit + ")";
+    public Quantity<U> convertTo(U targetUnit) {
+
+        if (unit instanceof TemperatureUnit) {
+
+            TemperatureUnit source = (TemperatureUnit) unit;
+            TemperatureUnit target = (TemperatureUnit) targetUnit;
+
+            double result =
+                    source.convertTo(value, target);
+
+            return new Quantity<>(result, targetUnit);
+        }
+
+        double base = unit.convertToBaseUnit(value);
+
+        double converted =
+                targetUnit.convertFromBaseUnit(base);
+
+        return new Quantity<>(converted, targetUnit);
     }
-
-    /*
-     ============================
-     UNIT CONVERSION
-     ============================
-     */
-
-    public double convertTo(U targetUnit) {
-
-        double base = unit.toBaseUnit(value);
-        return targetUnit.fromBaseUnit(base);
-    }
-
-    /*
-     ============================
-     ADD
-     ============================
-     */
 
     public Quantity<U> add(Quantity<U> other) {
         return add(other, unit);
@@ -80,19 +71,11 @@ public class Quantity<U extends IMeasurable> {
 
         validateArithmeticOperands(other, targetUnit, true);
 
-        double baseResult =
-                performBaseArithmetic(other, ArithmeticOperation.ADD);
+        double result =
+                performArithmetic(other, targetUnit, ArithmeticOperation.ADD);
 
-        double converted = targetUnit.fromBaseUnit(baseResult);
-
-        return new Quantity<U>(roundToTwoDecimals(converted), targetUnit);
+        return new Quantity<>(result, targetUnit);
     }
-
-    /*
-     ============================
-     SUBTRACT
-     ============================
-     */
 
     public Quantity<U> subtract(Quantity<U> other) {
         return subtract(other, unit);
@@ -102,103 +85,85 @@ public class Quantity<U extends IMeasurable> {
 
         validateArithmeticOperands(other, targetUnit, true);
 
-        double baseResult =
-                performBaseArithmetic(other, ArithmeticOperation.SUBTRACT);
+        double result =
+                performArithmetic(other, targetUnit, ArithmeticOperation.SUBTRACT);
 
-        double converted = targetUnit.fromBaseUnit(baseResult);
-
-        return new Quantity<U>(roundToTwoDecimals(converted), targetUnit);
+        return new Quantity<>(result, targetUnit);
     }
-
-    /*
-     ============================
-     DIVIDE
-     ============================
-     */
 
     public double divide(Quantity<U> other) {
 
         validateArithmeticOperands(other, null, false);
 
-        return performBaseArithmetic(other, ArithmeticOperation.DIVIDE);
+        return performArithmetic(other, null, ArithmeticOperation.DIVIDE);
     }
-
-    /*
-     ============================
-     VALIDATION HELPER (UC13)
-     ============================
-     */
 
     private void validateArithmeticOperands(
             Quantity<U> other,
             U targetUnit,
-            boolean targetUnitRequired) {
+            boolean targetRequired) {
 
         if (other == null)
             throw new IllegalArgumentException("Operand cannot be null");
 
-        if (!unit.getClass().equals(other.unit.getClass()))
+        if (unit.getClass() != other.unit.getClass())
             throw new IllegalArgumentException("Incompatible unit types");
 
         if (!Double.isFinite(value) || !Double.isFinite(other.value))
             throw new IllegalArgumentException("Values must be finite");
 
-        if (targetUnitRequired && targetUnit == null)
+        if (targetRequired && targetUnit == null)
             throw new IllegalArgumentException("Target unit required");
     }
 
-    /*
-     ============================
-     CENTRAL ARITHMETIC METHOD
-     ============================
-     */
-
-    private double performBaseArithmetic(
+    private double performArithmetic(
             Quantity<U> other,
+            U targetUnit,
             ArithmeticOperation operation) {
 
-        double baseThis = unit.toBaseUnit(value);
-        double baseOther = other.unit.toBaseUnit(other.value);
+        // UC14 validation
+        this.unit.validateOperationSupport(operation.name());
 
-        return operation.compute(baseThis, baseOther);
+        double base1 = unit.convertToBaseUnit(value);
+        double base2 = other.unit.convertToBaseUnit(other.value);
+
+        double result = operation.compute(base1, base2);
+
+        if (operation == ArithmeticOperation.DIVIDE)
+            return result;
+
+        return targetUnit.convertFromBaseUnit(result);
     }
-
-    /*
-     ============================
-     ENUM FOR OPERATIONS
-     ============================
-     */
 
     private enum ArithmeticOperation {
 
-        ADD((a, b) -> a + b),
+        ADD {
+            public double compute(double a, double b) {
+                return a + b;
+            }
+        },
 
-        SUBTRACT((a, b) -> a - b),
+        SUBTRACT {
+            public double compute(double a, double b) {
+                return a - b;
+            }
+        },
 
-        DIVIDE((a, b) -> {
-            if (b == 0.0)
-                throw new ArithmeticException("Divide by zero");
-            return a / b;
-        });
+        DIVIDE {
+            public double compute(double a, double b) {
 
-        private final DoubleBinaryOperator operation;
+                if (b == 0)
+                    throw new ArithmeticException("Cannot divide by zero");
 
-        ArithmeticOperation(DoubleBinaryOperator operation) {
-            this.operation = operation;
-        }
+                return a / b;
+            }
+        };
 
-        public double compute(double a, double b) {
-            return operation.applyAsDouble(a, b);
-        }
+        public abstract double compute(double a, double b);
     }
 
-    /*
-     ============================
-     ROUNDING
-     ============================
-     */
-
-    private double roundToTwoDecimals(double value) {
-        return Math.round(value * 100.0) / 100.0;
+    @Override
+    public String toString() {
+        return value + " " + unit.getUnitName();
     }
 }
