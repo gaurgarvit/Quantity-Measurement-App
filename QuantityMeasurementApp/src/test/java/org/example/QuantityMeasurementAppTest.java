@@ -2,6 +2,8 @@ package org.example;
 
 import org.example.dto.QuantityDTO;
 import org.example.exception.QuantityMeasurementException;
+import org.example.repository.IQuantityMeasurementRepository;
+import org.example.repository.QuantityMeasurementCacheRepository;
 import org.example.service.IQuantityMeasurementService;
 import org.example.service.QuantityMeasurementService;
 import org.junit.jupiter.api.BeforeEach;
@@ -15,7 +17,10 @@ public class QuantityMeasurementAppTest {
 
     @BeforeEach
     void setUp() {
-        service = new QuantityMeasurementService();
+        IQuantityMeasurementRepository repository =
+                QuantityMeasurementCacheRepository.getInstance();
+
+        service = new QuantityMeasurementService(repository);
     }
 
     @Test
@@ -26,7 +31,6 @@ public class QuantityMeasurementAppTest {
         assertTrue(service.compare(feet, inches));
     }
 
-
     @Test
     void givenDifferentValues_whenNotEqual_shouldReturnFalse() {
         QuantityDTO feet = new QuantityDTO(1, "FEET", "Length");
@@ -34,7 +38,6 @@ public class QuantityMeasurementAppTest {
 
         assertFalse(service.compare(feet, inches));
     }
-
 
     @Test
     void givenDifferentTypes_whenCompare_shouldThrowException() {
@@ -45,7 +48,6 @@ public class QuantityMeasurementAppTest {
                 () -> service.compare(length, weight));
     }
 
-
     @Test
     void givenFeet_whenConvertToInches_shouldReturnCorrectValue() {
         QuantityDTO feet = new QuantityDTO(1, "FEET", "Length");
@@ -55,7 +57,6 @@ public class QuantityMeasurementAppTest {
         assertEquals(12.0, result.getValue(), 0.001);
     }
 
-
     @Test
     void givenGram_whenConvertToKilogram_shouldReturnCorrectValue() {
         QuantityDTO gram = new QuantityDTO(1000, "GRAM", "Weight");
@@ -64,7 +65,6 @@ public class QuantityMeasurementAppTest {
 
         assertEquals(1.0, result.getValue(), 0.001);
     }
-
 
     @Test
     void givenFeetAndInches_whenAdd_shouldReturnCorrectResult() {
@@ -76,7 +76,6 @@ public class QuantityMeasurementAppTest {
         assertEquals(2.0, result.getValue(), 0.001);
     }
 
-
     @Test
     void givenDifferentTypes_whenAdd_shouldThrowException() {
         QuantityDTO length = new QuantityDTO(1, "FEET", "Length");
@@ -85,7 +84,6 @@ public class QuantityMeasurementAppTest {
         assertThrows(QuantityMeasurementException.class,
                 () -> service.add(length, weight));
     }
-
 
     @Test
     void givenZeroValues_whenAdd_shouldReturnZero() {
@@ -96,7 +94,6 @@ public class QuantityMeasurementAppTest {
 
         assertEquals(0.0, result.getValue(), 0.001);
     }
-
 
     @Test
     void givenNegativeValues_whenAdd_shouldWorkCorrectly() {

@@ -1,21 +1,21 @@
 package org.example.model;
 
 public enum LengthUnit implements Unit {
-    FEET(1.0),
-    INCHES(1.0 / 12),
-    YARDS(3.0);
 
-    private final double factor;
+    FEET {
+        public double toBase(double v) { return v; }
+        public double fromBase(double v) { return v; }
+    },
 
-    LengthUnit(double factor) {
-        this.factor = factor;
+    INCHES {
+        public double toBase(double v) { return v / 12; }
+        public double fromBase(double v) { return v * 12; }
+    };
+
+    public String getUnitName() {
+        return name();
     }
 
-    public double getConversionFactor() { return factor; }
-
-    public String getUnitName() { return name(); }
-
-    @Override
     public String getMeasurementType() {
         return "Length";
     }

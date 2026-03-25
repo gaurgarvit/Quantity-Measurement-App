@@ -10,7 +10,7 @@ public class Quantity {
     }
 
     public double toBase() {
-        return value * unit.getConversionFactor();
+        return unit.toBase(value);
     }
 
     public double getValue() { return value; }
