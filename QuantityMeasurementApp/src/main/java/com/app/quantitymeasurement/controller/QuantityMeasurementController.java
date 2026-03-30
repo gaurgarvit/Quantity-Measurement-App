@@ -17,6 +17,7 @@ public class QuantityMeasurementController {
     @Autowired
     private IQuantityMeasurementService service;
 
+    // Endpoints for operations
     @PostMapping("/compare")
     public QuantityMeasurementDTO compare(@RequestBody QuantityInputDTO input) {
         return service.compare(input);
