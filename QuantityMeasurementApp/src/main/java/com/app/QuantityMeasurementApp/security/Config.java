@@ -53,7 +53,7 @@ public class Config {
     public CorsConfigurationSource corsConfigurationSource() {
         CorsConfiguration config = new CorsConfiguration();
 
-        config.setAllowedOrigins(List.of("http://localhost:5173", "http://localhost:4200")); // React and Angular
+        config.setAllowedOrigins(List.of("http://localhost:5173", "http://localhost:4200","https://myquanto.netlify.app/")); // React
         config.setAllowedMethods(List.of("GET", "POST", "PUT", "DELETE", "OPTIONS"));
         config.setAllowedHeaders(List.of("*")); // IMPORTANT for Authorization header
         config.setAllowCredentials(true);
