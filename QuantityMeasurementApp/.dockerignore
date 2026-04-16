@@ -1,0 +1,29 @@
+# Maven
+target/
+*.jar
+*.war
+*.ear
+.m2/
+
+# Version control
+.git
+.gitignore
+.gitattributes
+
+# IDEs
+.idea/
+.vscode/
+*.iml
+*.iws
+*.ipr
+.DS_Store
+
+# Build
+.maven/
+
+# Documentation
+README.md
+LICENSE
+
+# Test files
+src/test/
