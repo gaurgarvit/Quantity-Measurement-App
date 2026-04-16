@@ -15,11 +15,15 @@ import org.springframework.web.filter.OncePerRequestFilter;
 import java.io.IOException;
 
 @Component
-@RequiredArgsConstructor
 public class JwtAuthFilter extends OncePerRequestFilter {
 
     private final UserRepository userRepository;
     private final AuthUtils authUtils;
+
+    public JwtAuthFilter(UserRepository userRepository, AuthUtils authUtils) {
+        this.userRepository = userRepository;
+        this.authUtils = authUtils;
+    }
 
     @Override
     protected void doFilterInternal(HttpServletRequest request,

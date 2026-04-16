@@ -17,10 +17,13 @@ import org.springframework.web.cors.UrlBasedCorsConfigurationSource;
 import java.util.List;
 
 @Configuration
-@RequiredArgsConstructor
 public class Config {
 
     private final JwtAuthFilter jwtAuthFilter;
+
+    public Config(JwtAuthFilter jwtAuthFilter) {
+        this.jwtAuthFilter = jwtAuthFilter;
+    }
 
     @Bean
     public SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {
@@ -30,6 +33,7 @@ public class Config {
                 .csrf(AbstractHttpConfigurer::disable)
                 .authorizeHttpRequests(auth -> auth
                         .requestMatchers("/auth/**","/swagger-ui/**","/v3/api-docs/**").permitAll()
+                        .requestMatchers("/api/measurements/compare", "/api/measurements/convert", "/api/measurements/add", "/api/measurements/subtract", "/api/measurements/divide", "/api/measurements/count/**").permitAll()
                         .anyRequest().authenticated()
                 )
                 .sessionManagement(session ->
@@ -49,7 +53,7 @@ public class Config {
     public CorsConfigurationSource corsConfigurationSource() {
         CorsConfiguration config = new CorsConfiguration();
 
-        config.setAllowedOrigins(List.of("http://localhost:4200")); // Angular
+        config.setAllowedOrigins(List.of("http://localhost:5173", "http://localhost:4200")); // React and Angular
         config.setAllowedMethods(List.of("GET", "POST", "PUT", "DELETE", "OPTIONS"));
         config.setAllowedHeaders(List.of("*")); // IMPORTANT for Authorization header
         config.setAllowCredentials(true);

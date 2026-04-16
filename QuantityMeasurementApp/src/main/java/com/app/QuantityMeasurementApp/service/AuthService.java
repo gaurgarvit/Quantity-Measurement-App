@@ -35,7 +35,7 @@ public class AuthService {
         User existingUser = userRepository.findByUsername(user.getUsername())
                 .orElseThrow(()->new RuntimeException("User not found"));
 
-        return authUtils.generateJwtToken(user);
+        return authUtils.generateJwtToken(existingUser);
     }
 
     public String signup(User user) {

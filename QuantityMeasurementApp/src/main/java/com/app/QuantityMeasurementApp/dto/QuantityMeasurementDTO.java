@@ -30,6 +30,7 @@ public class QuantityMeasurementDTO {
 
     private String  errorMessage;
     private boolean error;
+    private String  timestamp;
 
     public QuantityMeasurementDTO() {}
 
@@ -51,6 +52,9 @@ public class QuantityMeasurementDTO {
         dto.resultMeasurementType = e.getResultMeasurementType();
         dto.errorMessage          = e.getErrorMessage();
         dto.error                 = e.isError();
+        if (e.getCreatedAt() != null) {
+            dto.timestamp         = e.getCreatedAt().toString();
+        }
         return dto;
     }
 
@@ -108,4 +112,6 @@ public class QuantityMeasurementDTO {
     public void    setErrorMessage(String v)           { this.errorMessage = v; }
     public boolean isError()                           { return error; }
     public void    setError(boolean v)                 { this.error = v; }
+    public String  getTimestamp()                      { return timestamp; }
+    public void    setTimestamp(String v)              { this.timestamp = v; }
 }

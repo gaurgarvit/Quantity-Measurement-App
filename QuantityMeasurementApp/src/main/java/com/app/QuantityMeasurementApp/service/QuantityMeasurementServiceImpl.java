@@ -45,19 +45,19 @@ public class QuantityMeasurementServiceImpl implements IQuantityMeasurementServi
     private IMeasurable resolveUnit(String unitName) {
 
         try {
-            return LengthUnit.valueOf(unitName.toUpperCase());
+            return LengthUnit.FEET.getUnitInstance(unitName);
         } catch (Exception ignored) {}
 
         try {
-            return WeightUnit.valueOf(unitName.toUpperCase());
+            return WeightUnit.GRAM.getUnitInstance(unitName);
         } catch (Exception ignored) {}
 
         try {
-            return VolumeUnit.valueOf(unitName.toUpperCase());
+            return VolumeUnit.LITRE.getUnitInstance(unitName);
         } catch (Exception ignored) {}
 
         try {
-            return TemperatureUnit.valueOf(unitName.toUpperCase());
+            return TemperatureUnit.CELSIUS.getUnitInstance(unitName);
         } catch (Exception ignored) {}
 
         throw new QuantityMeasurementException("Invalid unit: " + unitName);
@@ -221,6 +221,7 @@ public class QuantityMeasurementServiceImpl implements IQuantityMeasurementServi
                     .divide(new Quantity<>(m2.getValue(), m2.getUnit()));
             QuantityMeasurementEntity e =
                     buildEntity(m1, m2, "DIVIDE", String.valueOf(result), null, false, null);
+            e.setResultValue(result);
             repository.save(e);
             return QuantityMeasurementDTO.fromEntity(e);
         } catch (Exception ex) {
