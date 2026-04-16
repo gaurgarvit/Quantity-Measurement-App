@@ -57,6 +57,16 @@ public class QuantityMeasurementController {
         return service.getErrored();
     }
 
+    @GetMapping("/history/all")
+    public List<OperationHistory> getAll() {
+        return service.getAll();
+    }
+
+    @GetMapping("/history/user")
+    public List<OperationHistory> getByUser() {
+        return service.getByUser();
+    }
+
     @GetMapping("/count/{operation}")
     public long count(@PathVariable String operation) {
         return service.count(operation);

@@ -24,5 +24,9 @@ public interface IQuantityMeasurementService {
 
     List<OperationHistory> getErrored();
 
+    List<OperationHistory> getAll();
+
+    List<OperationHistory> getByUser();
+
     long count(String operation);
 }

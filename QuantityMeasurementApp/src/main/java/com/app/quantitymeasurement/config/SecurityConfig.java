@@ -37,6 +37,7 @@ public class SecurityConfig {
                         .requestMatchers("/api/v1/quantities/add").permitAll()
                         .requestMatchers("/api/v1/quantities/subtract").permitAll()
                         .requestMatchers("/api/v1/quantities/divide").permitAll()
+                        .requestMatchers("/api/v1/quantities/count/**").permitAll()
                         .anyRequest().authenticated()
                 )
                 .sessionManagement(session -> session.sessionCreationPolicy(SessionCreationPolicy.STATELESS))
